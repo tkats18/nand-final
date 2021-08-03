@@ -1,0 +1,90 @@
+class GameManager{
+
+    field TableManager table;
+
+    constructor GameManager new(){
+        let table = TableManager.new();
+        return this;
+    }
+
+    method void fillBoard(){
+
+        var char key;
+        var boolean isFirst,isLast;
+        var SquareCursor cursor;
+
+        let cursor = SquareCursor.new();
+        let isFirst = true;
+        let isLast = false;
+
+        do cursor.drawCursor(false);
+
+
+        while(~(isLast)){
+
+            if (~(isFirst)){
+                let isLast =  userAction(key,cursor);
+            }else{
+                let isFirst = false;
+            }
+
+            while( (Keyboard.keyPressed() = 0) & (~isLast)) {}
+            let key = Keyboard.keyPressed();
+            while( ~(Keyboard.keyPressed() = 0) & (~isLast)) {}
+        }
+        do table.validate();
+        return;
+    }
+
+    method boolean userAction(int key,SquareCursor cursor){
+        var boolean isNextChosen,isCurrChosen;
+        let isNextChosen = false;
+        let isCurrChosen = false;
+
+        if (isArrow(key)){
+
+            if (key = 131 & cursor.validateMove(false,-1)) { 
+                let isNextChosen = table.isCoordChosen(cursor.getMove(1));
+                let isCurrChosen = table.isCoordChosen(cursor.getPos());
+
+                do cursor.moveUp(isNextChosen,isCurrChosen);
+            }   
+     
+            if (key = 133 & cursor.validateMove(false,1)) {
+                let isNextChosen = table.isCoordChosen(cursor.getMove(2));
+                let isCurrChosen = table.isCoordChosen(cursor.getPos());
+
+                do cursor.moveDown(isNextChosen,isCurrChosen);
+            }  
+     
+            if (key = 130 & cursor.validateMove(true,-1)) { 
+                let isNextChosen = table.isCoordChosen(cursor.getMove(3));
+                let isCurrChosen = table.isCoordChosen(cursor.getPos());
+
+                do cursor.moveLeft(isNextChosen,isCurrChosen);
+            }  
+     
+            if (key = 132  & cursor.validateMove(true,1)) { 
+                let isNextChosen = table.isCoordChosen(cursor.getMove(4));
+                let isCurrChosen = table.isCoordChosen(cursor.getPos());
+
+                do cursor.moveRight(isNextChosen,isCurrChosen);
+            }   
+        }
+
+        if (key = 128){
+            do table.markSquare(cursor.getX(), cursor.getY());
+        }
+
+        if (key = 83){
+            return true;
+        }
+
+        return false;
+    }
+
+    method  boolean isArrow(int key){
+        return (key>130 & key < 134);
+    }
+
+}

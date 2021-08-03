@@ -1,0 +1,134 @@
+class SquareCursor{
+
+    field int xCoord;
+    field int yCoord;
+
+    field int x;
+    field int y; 
+
+    constructor SquareCursor new(){
+        let xCoord = 25;
+        let yCoord = 18;
+
+        let x = 0;
+        let y = 0;
+
+        return this;
+    }
+
+    method void removeCursor(){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(xCoord+1, yCoord+1, xCoord+19, yCoord+19);
+
+        return;
+    }
+
+    method void drawCursor(boolean isChosen){
+        do Screen.setColor(true);
+        do Screen.drawRectangle(xCoord, yCoord, xCoord+20, yCoord+20);
+        
+        if (~(isChosen)){
+            do Screen.setColor(false);
+            do Screen.drawRectangle(xCoord+5, yCoord+5, xCoord+15, yCoord+15);
+        }
+        
+        return;
+    }
+
+    method boolean validateMove(boolean isX, int upOrDown){
+        var boolean valid;
+        let valid = true;
+
+        if (isX){
+            let valid = (((xCoord + (20 * upOrDown)) > 24) &  ((xCoord + (20 * upOrDown)) < 206));
+        }else{
+            let valid = (((yCoord + (20 * upOrDown)) > 17) &  ((yCoord + (20 * upOrDown)) < 199));
+        }
+
+        return valid;
+    }
+
+    method void moveUp(boolean isChosen, boolean isCurrChosen){
+        if (~(isCurrChosen)){
+            do removeCursor();
+        }
+        let yCoord = yCoord - 20;
+        let y = y - 1;
+
+        do drawCursor(isChosen);
+        return;
+    }
+
+    method void moveLeft(boolean isChosen, boolean isCurrChosen){
+        if (~(isCurrChosen)){
+            do removeCursor();
+        }
+        let xCoord = xCoord - 20;
+        let x = x - 1;
+
+        do drawCursor(isChosen);
+        return;
+    }
+
+    method void moveDown(boolean isChosen, boolean isCurrChosen){
+        if (~(isCurrChosen)){
+            do removeCursor();
+        }
+        let yCoord = yCoord + 20;
+        let y = y + 1;
+
+        do drawCursor(isChosen);
+        return;
+    }
+
+    method void moveRight(boolean isChosen, boolean isCurrChosen){
+        if (~(isCurrChosen)){
+            do removeCursor();
+        }
+
+        let xCoord = xCoord + 20;
+        let x = x + 1;
+
+        do drawCursor(isChosen);
+        return;
+    }
+    
+    /*******************/
+
+    method Coord getPos(){
+        var Coord res;
+        let res = Coord.new(x,y); 
+        return res;
+    }
+
+    method Coord getMove(int move){
+        var Coord res;
+        
+        let res = Coord.new(x,y); 
+        
+        if (move=1){
+            do res.update(x,y-1);
+        }
+        if (move=2){
+            do res.update(x,y+1);
+        }
+        if (move=3){
+            do res.update(x-1,y);
+        }
+        if (move=4){
+            do res.update(x+1,y);
+        }
+        
+        return res;
+
+    }
+
+
+    method int getX(){
+        return x;
+    }
+
+    method int getY(){
+        return y;
+    }
+}

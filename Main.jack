@@ -1,0 +1,9 @@
+class Main {
+
+    function void main() {
+        var GameManager game;
+        let game = GameManager.new();
+        do game.fillBoard();
+        return;
+    }
+}

@@ -1,0 +1,79 @@
+class TableManager{
+
+    field Array leftData;
+    field Array rightData;
+    
+    field int startXLeft;
+    field int startYLeft;
+
+    field int startXRight;
+    field int startYRight;
+
+    constructor TableManager new(){
+        
+        let startXLeft = 25;
+        let startYLeft = 18;
+
+        let startXRight = 260;
+        let startYRight = 18;
+
+
+        let leftData = initializeBoard(startXLeft,startYLeft);
+        let rightData = initializeBoard(startXRight,startYRight);
+
+        return this;
+    }
+
+    method Array initializeBoard(int x, int y){
+        var int i,j;
+        var  Array data;
+
+        let i=0;
+        let j=0;
+        let data = Array.new(100);
+
+        while (j<10){
+
+            while (i<10){
+
+                let data[(j*10)+i] = Square.new((20*i) + x, (20*j) + y, 20);
+                let i = i + 1;
+                
+            }
+            let i = 0;
+            let j = j + 1;
+        
+        }
+
+        return data;
+    }
+
+    method void validate(){
+        do Output.printString("validate");
+        return;
+    }
+
+    method boolean isCoordChosen(Coord c){
+        var Square s;
+
+        if (c.getX()<0 | c.getX()>9 | c.getY()<0 | c.getY()>9){
+            return false;
+        }
+        
+        let s = leftData[c.getX()+((c.getY())*10)];
+        return s.getIsChosen();
+    }
+
+    method void markSquare(int x, int y){
+        var Square cur;
+        let cur = leftData[(x+(y*10))];
+        do cur.choose();
+        return;
+    }
+
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+     }
+}

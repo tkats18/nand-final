@@ -1,0 +1,33 @@
+class Coord{
+
+    field int xCoord;
+    field int yCoord;
+
+    constructor Coord new(int x, int y){
+        let xCoord = x;
+        let yCoord = y;
+        return this;
+    }
+
+    method int getX(){
+        return xCoord;
+    }
+
+    method int getY(){
+        return yCoord;
+    }
+
+    method void update(int x, int y){
+        let xCoord = x;
+        let yCoord = y;
+        return;
+    }
+
+    method void print(){
+        do Output.printInt(xCoord);
+        do Output.println();
+        do Output.printInt(yCoord);
+        do Output.println();
+        return;
+    }
+}
