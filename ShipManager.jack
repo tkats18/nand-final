@@ -1,0 +1,100 @@
+class ShipManager{
+    
+    field Array playerShips;
+    field int playerLoglen;
+
+    field Array computerShips;
+
+
+    constructor ShipManager new(){
+        let playerShips = Array.new(100);
+        let computerShips = Array.new(7);
+        let playerLoglen = 0;
+        return this;
+    }
+
+    method void addToPlayerShip(int shipIndex, Square sq){
+        var Ship curShip;
+
+        if (~(playerLoglen>shipIndex)){
+            let curShip = Ship.new(shipIndex);
+            let playerShips[shipIndex] = curShip;
+            let playerLoglen = shipIndex+1; 
+        }else{
+            let curShip = playerShips[shipIndex];
+        }
+
+        do curShip.addSquare(sq);
+        return;
+    }
+
+    method void generateCumputerShips(){
+
+        return;
+    }
+
+    method boolean validate(){
+        var int i, curNum;
+        var int oneNum, twoNum, threeNum, fourNum, fiveNum;
+        var Ship curShip;
+
+        let curNum = -1;
+        let oneNum = 0;
+        let twoNum = 0;
+        let threeNum = 0;
+        let fourNum = 0;
+        let fiveNum = 0;
+        // do Output.printString("log length check");
+        // do Output.printInt(playerLoglen);
+        // do Output.println();
+
+        if (~(playerLoglen = 7)){
+            return false;
+        }
+        
+        let i = 0;
+        // do Output.printString("length check");
+        // do Output.println();
+
+        while(i<7){
+            let curShip = playerShips[i];
+            let curNum = curShip.getShipLen();
+            // do Output.println();
+            // do Output.printInt(curNum);
+            if (curNum = 1){
+                let oneNum = oneNum + 1;
+            }
+
+            if (curNum = 2){
+                let twoNum = twoNum + 1;
+            }
+
+            if (curNum = 3){
+                let threeNum = threeNum + 1;
+            }
+            
+            if (curNum = 4){
+                let fourNum = fourNum + 1;
+            }
+
+            if (curNum = 5){
+                let fiveNum = fiveNum + 1;
+            }
+
+            let i = i + 1; 
+        }
+
+        // if (((fiveNum = 1) & (fourNum = 1) & (threeNum = 1) & (twoNum = 2) & (oneNum = 2))){
+        //     do Output.println();
+        //     do Output.printString("inside true");
+        // }else{
+        //     do Output.println();
+        //     do Output.printString("inside false");
+        // }
+
+        return ((fiveNum = 1) & (fourNum = 1) & (threeNum = 1) & (twoNum = 2) & (oneNum = 2));
+    }
+
+
+
+}

@@ -1,0 +1,43 @@
+class Random{
+    field int seed;
+ 
+    constructor Random new() {
+        return this;
+    }
+ 
+    method int generateRandom(int range) {
+        
+        let seed = seed + 20251;
+        if (seed < 0) {
+            let seed = seed - 32767 - 1;
+        }
+
+        return seed - (Math.divide(seed , range) * range);
+    }
+
+    method void getSeed(){
+        var int key;
+
+        let key = 0;
+        let seed = 0;
+
+        do Output.printString("press any key to start");
+        do Output.println();
+ 
+        while(~key) {
+
+            let seed = seed + 1;
+            if(seed = 32767 ) {
+                let seed = 0;
+            }
+            let key = Keyboard.keyPressed();
+        }
+
+        do Screen.clearScreen();
+        return;
+    }
+ 
+    method int mod(int a, int b) {
+        return a - (Math.divide(a, b) * b);
+    }
+}

@@ -2,8 +2,15 @@ class Main {
 
     function void main() {
         var GameManager game;
-        let game = GameManager.new();
+        var Random random;
+
+        let random = Random.new();
+        do random.getSeed();
+
+        let game = GameManager.new(random);
         do game.fillBoard();
+        do game.startGame();
+        
         return;
     }
 }

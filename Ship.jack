@@ -1,0 +1,45 @@
+class Ship{
+    field Array squares;
+    field int logLen;
+    field int shipIndex;
+
+    constructor Ship new(int ind){
+        let squares = Array.new(10);
+        let logLen = 0; 
+        let shipIndex = ind;
+        return this;
+    }
+
+    method void addSquare(Square sq){
+        let squares[logLen] = sq;
+        let logLen = logLen + 1;
+        return;
+    }
+
+    method int getShipLen(){
+        return logLen;
+    }
+
+    method void print(){
+        do Output.printString("index: ");
+        do Output.printInt(shipIndex);
+        do Output.printString(" length: ");
+        do Output.printInt(logLen);
+        do printSquares();
+        return;
+    }
+
+    method void  printSquares(){
+        var int i;
+        var Square s;
+        let i = 0;
+
+        while(i<logLen){
+            let i = i + 1;
+            let s = squares[i];
+            do s.printPos();
+        }
+        return;
+    }
+
+}

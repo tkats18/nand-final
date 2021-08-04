@@ -1,18 +1,20 @@
 class GameManager{
 
     field TableManager table;
+    field BattleManager battle;
+    field Random random;
 
-    constructor GameManager new(){
-        let table = TableManager.new();
+    constructor GameManager new(Random rand){
+        let table = TableManager.new(rand);
         return this;
     }
 
     method void fillBoard(){
-
+        
         var char key;
         var boolean isFirst,isLast;
         var SquareCursor cursor;
-
+        
         let cursor = SquareCursor.new();
         let isFirst = true;
         let isLast = false;
@@ -32,9 +34,38 @@ class GameManager{
             let key = Keyboard.keyPressed();
             while( ~(Keyboard.keyPressed() = 0) & (~isLast)) {}
         }
-        do table.validate();
+
+        do Output.printString("ship validate start   ");
+
+        if (table.validate()){
+            do Output.printString("ship conf true   ");
+
+            if (table.validateShips()){
+                do Output.printString("ship num true   " );
+                
+                do table.generateCumputerShips();
+                let battle = BattleManager.new(table);
+            }else{
+                do Output.printString("ship num false   ");
+                
+                do table.reset();
+                do fillBoard();
+            }
+        }else{
+            do Output.printString("ship conf false   ");
+        
+            do table.reset();
+            do fillBoard();
+        }
+
         return;
     }
+
+    method void startGame(){
+        do battle.start();
+        return;
+    }
+
 
     method boolean userAction(int key,SquareCursor cursor){
         var boolean isNextChosen,isCurrChosen;

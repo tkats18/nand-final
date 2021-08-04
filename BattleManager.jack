@@ -1,0 +1,14 @@
+class BattleManager{
+    
+    field TableManager tableManager;
+
+    constructor BattleManager new (TableManager table){
+        let tableManager = table;
+        return this;
+    }
+
+    method void start(){
+        return;
+    }
+    
+}

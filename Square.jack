@@ -8,18 +8,20 @@
 /** Implements a graphical square. */
 class Square {
 
-    field int x, y; // screen location of the square's top-left corner
+    field int x, y, index, shipIndex; // screen location of the square's top-left corner
     field int size; // length of this square, in pixels
 
     field boolean isChosen;
  
     /** Constructs a new square with a given location and size. */
-    constructor Square new(int Ax, int Ay, int Asize) {
+    constructor Square new(int Ax, int Ay, int ind, int Asize) {
        
         let x = Ax;
         let y = Ay;
         let size = Asize;
+        let index = ind;
         let isChosen = false;
+        let shipIndex = -1;
 
         do draw();
         return this;
@@ -41,6 +43,19 @@ class Square {
         return isChosen;
     }
 
+    method int getIndex(){
+       return index;
+    }
+
+    method int getShipIndex(){
+       return shipIndex;
+    }
+
+    method void setShipIndex(int ind){
+       let shipIndex = ind;
+       return;
+    }
+
     method void fillSquare(){
         do Screen.setColor(true);
         do Screen.drawRectangle(x, y, x + size, y + size);
@@ -49,7 +64,9 @@ class Square {
  
     /** Draws the square on the screen. */
     method void draw() {
-       
+      // do Output.printString("draw");
+      do Screen.setColor(true);
+
        do Screen.drawLine(x, y, x, y+size );
        do Screen.drawLine(x, y, x+size, y );
        do Screen.drawLine(x+size, y, x+size, y+size );
@@ -60,8 +77,10 @@ class Square {
  
     /** Erases the square from the screen. */
     method void erase() {
+       
        do Screen.setColor(false);
        do Screen.drawRectangle(x, y, x + size, y + size);
+      //  do Output.printString("erase");
        return;
     }
  
@@ -97,6 +116,30 @@ class Square {
        return;
     }
  
+
+   method int getX(){
+       return x;
+    }
+
+   method int getY(){
+      return y;
+   }
+   
+   method void printPos(){
+      var Math m;
+      let m = Math.new();
+
+      do Output.printString("( ");
+      do Output.printInt(m.divide(shipIndex,10));
+      do Output.printString(" , ");
+      do Output.printInt(shipIndex - (10 * m.divide(shipIndex,10)));
+      do Output.printString(" ) ");
+      do Output.println();
+
+      return;
+  }
+
+
     /** Moves the square down by 2 pixels. */
     method void moveDown() {
        if ((y + size) < 254) {

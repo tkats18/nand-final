@@ -1,5 +1,8 @@
 class TableManager{
 
+    field ShipManager shipManager ;
+    field Random random;
+
     field Array leftData;
     field Array rightData;
     
@@ -9,14 +12,15 @@ class TableManager{
     field int startXRight;
     field int startYRight;
 
-    constructor TableManager new(){
+    constructor TableManager new(Random rand){
+
+        let random = rand;
         
         let startXLeft = 25;
         let startYLeft = 18;
 
         let startXRight = 260;
         let startYRight = 18;
-
 
         let leftData = initializeBoard(startXLeft,startYLeft);
         let rightData = initializeBoard(startXRight,startYRight);
@@ -36,7 +40,7 @@ class TableManager{
 
             while (i<10){
 
-                let data[(j*10)+i] = Square.new((20*i) + x, (20*j) + y, 20);
+                let data[(j*10)+i] = Square.new((20*i) + x, (20*j) + y, i+(10*j), 20);
                 let i = i + 1;
                 
             }
@@ -48,9 +52,240 @@ class TableManager{
         return data;
     }
 
-    method void validate(){
-        do Output.printString("validate");
+    method void generateCumputerShips(){
+
+        do generateShipWithLength(5);
+        do generateShipWithLength(4);
+        do generateShipWithLength(3);
+        do generateShipWithLength(2);
+        do generateShipWithLength(2);
+        do generateShipWithLength(1);
+
         return;
+    }
+
+    method void generateShipWithLength(int len){
+        // random place
+        // random direction
+        
+    }
+
+    method boolean validate(){
+
+        var int i, j, shipIndex, currIndex, currRightDown;
+        var int inWhileI, inWhileJ;
+        var Square cur;
+        var boolean continue, whileBreaker;
+
+        let i = 0;
+        let j = 0;
+        let inWhileI = 0;
+        let inWhileJ = 0;
+        let currIndex = 0; 
+        let shipIndex = 0;
+        let currRightDown = -1;
+        let whileBreaker = true;
+        let cur = leftData[currIndex];
+        let shipManager = ShipManager.new();
+
+        while(i < 10){
+            while (j < 10){
+
+                let currIndex = (10 * i) + j;
+                let cur = leftData[currIndex];
+                
+                if (cur.getIsChosen()){
+                    let currRightDown = checkRightNeighbour(i,j);
+
+                    // both (right and down or down and diagonal or right and digonal)
+                    if (currRightDown = 3){
+                        return false;
+                    }
+                    
+                    //down
+                    if (currRightDown = 1 & ((cur.getShipIndex()=-1))){
+
+                        let inWhileI = i;
+                        let inWhileJ = j;
+
+                        while(whileBreaker & (checkBorders(inWhileI, inWhileJ))){
+                            let cur = leftData[currIndex];
+
+                            if ( (~(cur.getIsChosen())) | ~(cur.getShipIndex()=-1) ){
+                                let whileBreaker = false;
+                            }else{
+
+                                if (checkLeftRightNeighbours(inWhileI,inWhileJ)){
+                                    return false;   
+                                }
+                                let cur = leftData[currIndex];
+                                do cur.setShipIndex(shipIndex);
+                                do shipManager.addToPlayerShip(shipIndex, cur);
+
+                                let currIndex = currIndex + 10;
+                                let inWhileI = inWhileI + 1;
+                            }
+                        }
+                        if (currIndex > ((10*(i+5)) + j )){
+                            return false;
+                        }
+                        let shipIndex = shipIndex + 1;
+                    }
+                    
+                    // none
+                    if (currRightDown = 0 & ((cur.getShipIndex()=-1))){
+                        let cur = leftData[currIndex];
+                        do cur.setShipIndex(shipIndex);
+                        do shipManager.addToPlayerShip(shipIndex, cur);
+                        let shipIndex = shipIndex + 1;
+                    }
+
+                    // right
+                    if (currRightDown = 2 & ((cur.getShipIndex()=-1))){
+                        let inWhileI = i;
+                        let inWhileJ = j;
+
+                        while(whileBreaker & (checkBorders(inWhileI, inWhileJ))){
+                            let cur = leftData[currIndex];
+
+                            if ( (~(cur.getIsChosen())) | (~(cur.getShipIndex()=-1)) ){
+                                let whileBreaker = false;
+                            }else{
+                                if (checkDownNeighbour(i,j)){
+                                    return false;   
+                                }
+                                
+                                let cur = leftData[currIndex];
+                                do cur.setShipIndex(shipIndex);
+                                do shipManager.addToPlayerShip(shipIndex, cur);
+
+                                let currIndex = currIndex + 1;
+                                let inWhileJ = inWhileJ + 1;
+                            }
+                        }
+                        
+                        if (currIndex > ((10*i) + j + 5)){
+                            return false;
+                        }
+
+                        let shipIndex = shipIndex + 1;
+                        let currIndex = currIndex + 1;
+                    }
+
+                }
+
+                let whileBreaker = true;
+                let j = j + 1;
+                let currRightDown = -1;
+
+            }
+            let j = 0;
+            
+            let i = i + 1;
+        }
+
+        return true;
+    }
+
+    method boolean validateShips(){
+        return shipManager.validate();
+    }
+
+    method void reset(){
+        var int i;
+        var Square sq;
+
+        let i = 0;
+
+        while(i<100){
+            let sq = leftData[i];
+            do sq.erase();
+            let i = i + 1;
+        }
+
+        let i = 0;
+        
+        while(i<100){
+            let sq = rightData[i];
+            do sq.erase();
+            let i = i + 1;
+        }
+
+        let leftData = initializeBoard(startXLeft,startYLeft);
+        let rightData = initializeBoard(startXRight,startYRight);
+        
+        return;
+    }
+
+
+    ////////////////////////// PRINTER //////////////////////////
+
+    method void printPos(int i, int j){
+        do Output.printString("( ");
+        do Output.printInt(i);
+        do Output.printString(" , ");
+        do Output.printInt(j);
+        do Output.printString(" ) ");
+        do Output.println();
+
+        return;
+    }
+
+    ////////////////////////// GETTER AND SETTER //////////////////////////
+
+    method ShipManager getShipManager(){
+        return shipManager;
+    }
+
+
+    ////////////////////////// CHCKERS //////////////////////////
+    method boolean checkBorders(int i, int j){
+        return ((i > -1) & (i < 10) & (j > -1) & (j < 10)); 
+    }
+
+    // i aris y
+    method boolean checkDownNeighbour(int i, int j){
+       
+        return (checkSquare(i + 1, j ));
+    }
+
+    method boolean checkLeftRightNeighbours(int i, int j){
+        return  (checkSquare(i, j + 1)) | (checkSquare(i, j - 1));
+    }
+
+
+    method boolean checkSquare(int i, int j){
+        var Square curSq;
+        if (checkBorders(i,j)){
+            let curSq = leftData[(10*(i))+j];
+            return curSq.getIsChosen();
+        }else{
+           return false;
+        }
+    }
+
+
+
+    method int checkRightNeighbour(int i, int j){
+        
+        var boolean isRight, isDown, isDiagonal;
+        let isRight = checkSquare(i,j+1);
+        let isDown = checkSquare(i+1,j);
+        let isDiagonal = checkSquare(i+1,j+1);
+
+        if ((isRight & isDown) | isDiagonal ){
+            return 3;
+        }
+
+        if (isDown){
+            return 1;
+        }
+        
+        if (isRight){
+            return 2;
+        }
+    
+        return 0;
     }
 
     method boolean isCoordChosen(Coord c){
@@ -75,5 +310,7 @@ class TableManager{
     method void dispose() {
         do Memory.deAlloc(this);
         return;
-     }
+    }
+
+
 }
