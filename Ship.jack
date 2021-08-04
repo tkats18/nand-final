@@ -29,6 +29,30 @@ class Ship{
         return;
     }
 
+    method void checkSink(){
+        var int i;
+        var Square s;
+        let i = 0;
+
+        while(i<logLen){
+            let s = squares[i];
+            if (~(s.getIsSunk())){
+                return;
+            }
+            let i = i + 1;
+        }
+        
+
+        let i = 0;
+        while(i<logLen){
+            let s = squares[i];
+            do s.drawX();
+            let i = i + 1;
+        }
+
+        return;
+    }
+
     method void  printSquares(){
         var int i;
         var Square s;

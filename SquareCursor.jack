@@ -6,10 +6,15 @@ class SquareCursor{
     field int x;
     field int y; 
 
-    constructor SquareCursor new(){
-        let xCoord = 25;
-        let yCoord = 18;
+    constructor SquareCursor new(boolean isLeft){
+        if (isLeft){
+            let xCoord = 25;
+            let yCoord = 18;
+        }else{
 
+            let xCoord = 260;
+            let yCoord = 18;
+        }
         let x = 0;
         let y = 0;
 
@@ -35,14 +40,23 @@ class SquareCursor{
         return;
     }
 
-    method boolean validateMove(boolean isX, int upOrDown){
+    method boolean validateMove(boolean isX, int upOrDown, boolean isLeft){
         var boolean valid;
         let valid = true;
 
-        if (isX){
-            let valid = (((xCoord + (20 * upOrDown)) > 24) &  ((xCoord + (20 * upOrDown)) < 206));
+        if (isLeft){
+            if (isX){
+                let valid = (((xCoord + (20 * upOrDown)) > 24) &  ((xCoord + (20 * upOrDown)) < 206));
+            }else{
+                let valid = (((yCoord + (20 * upOrDown)) > 17) &  ((yCoord + (20 * upOrDown)) < 199));
+            }
         }else{
-            let valid = (((yCoord + (20 * upOrDown)) > 17) &  ((yCoord + (20 * upOrDown)) < 199));
+            if (isX){
+                let valid = (((xCoord + (20 * upOrDown)) > 259) &  ((xCoord + (20 * upOrDown)) < 441));
+            }else{
+                let valid = (((yCoord + (20 * upOrDown)) > 17) &  ((yCoord + (20 * upOrDown)) < 199));
+            }
+        
         }
 
         return valid;
@@ -54,8 +68,9 @@ class SquareCursor{
         }
         let yCoord = yCoord - 20;
         let y = y - 1;
-
-        do drawCursor(isChosen);
+        if (~isChosen){
+            do drawCursor(isChosen);
+        }
         return;
     }
 
@@ -65,8 +80,9 @@ class SquareCursor{
         }
         let xCoord = xCoord - 20;
         let x = x - 1;
-
-        do drawCursor(isChosen);
+        if (~isChosen){
+            do drawCursor(isChosen);
+        }
         return;
     }
 
@@ -76,8 +92,9 @@ class SquareCursor{
         }
         let yCoord = yCoord + 20;
         let y = y + 1;
-
-        do drawCursor(isChosen);
+        if (~isChosen){
+            do drawCursor(isChosen);
+        }
         return;
     }
 
@@ -88,8 +105,9 @@ class SquareCursor{
 
         let xCoord = xCoord + 20;
         let x = x + 1;
-
-        do drawCursor(isChosen);
+        if (~isChosen){
+            do drawCursor(isChosen);
+        }
         return;
     }
     

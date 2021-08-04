@@ -25,6 +25,8 @@ class TableManager{
         let leftData = initializeBoard(startXLeft,startYLeft);
         let rightData = initializeBoard(startXRight,startYRight);
 
+        let shipManager = ShipManager.new();
+
         return this;
     }
 
@@ -54,21 +56,152 @@ class TableManager{
 
     method void generateCumputerShips(){
 
-        do generateShipWithLength(5);
-        do generateShipWithLength(4);
-        do generateShipWithLength(3);
-        do generateShipWithLength(2);
-        do generateShipWithLength(2);
-        do generateShipWithLength(1);
+        do generateShipWithLength(5,0);
+        do generateShipWithLength(4,1);
+        do generateShipWithLength(3,2);
+        do generateShipWithLength(2,3);
+        do generateShipWithLength(2,4);
+        do generateShipWithLength(1,5);
+        do generateShipWithLength(1,6);
 
         return;
     }
 
-    method void generateShipWithLength(int len){
-        // random place
-        // random direction
+    method void generateShipWithLength(int len,int ind){
+
+        var int direction, pos, curX, curY;
+        var Square curSq;
+        var boolean end;
+
+        let end = false;
+        let pos = -1;
+        let direction = -1;
+        let curX = -1;
+        let curY = -1;
+
+
+        while(~(end)){
+            let pos = random.generateRandom(100);
+            let curX = pos - (Math.divide(pos, 10) * 10);
+            let curY = Math.divide(pos, 10);
+
+            let curSq = rightData[pos];
+            if (~(curSq.getIsChosen())){
+                let direction = random.generateRandom(2);
         
+                if (direction = 0){
+                    if (checkNToRight(curY,curX,len)){
+                        // do Output.printString("right");
+                        do fillNToRight(curY,curX,len,ind);
+                        let end = true; 
+                    }
+                }
+                
+                if (direction = 1){
+                    if(checkNToDown(curY,curX,len)){
+                        // do Output.printString("down");
+                        
+                        do fillNToDown(curY,curX,len,ind);
+                        let end = true; 
+                    }
+                }
+            }
+
+        } 
+        return;
+
     }
+
+    method void fillNToRight(int i, int j, int len,int ind){
+        var Square curSq;
+
+        var int k;
+        let k = 0;
+
+        while(k<len){            
+            let curSq = rightData[(10*i)+j+k];
+            do curSq.choose();
+            do curSq.setShipIndex(ind);
+            do shipManager.addToComputerShip(ind,curSq);
+            let k = k + 1;
+        }
+
+        return;
+    }
+
+    method void fillNToDown(int i, int j, int len,int ind){
+        var Square curSq;
+
+        var int k;
+        let k = 0;
+
+        while(k<len){            
+            let curSq = rightData[(10*(i+k))+j];
+            do curSq.choose();
+            do curSq.setShipIndex(ind);
+
+            do shipManager.addToComputerShip(ind,curSq);
+            let k = k + 1;
+        }
+
+        return;
+    }
+
+
+    method boolean checkNToRight(int i, int j, int len){
+        var Square curSq;
+
+        var int k;
+        let k = 0;
+
+        while(k<len){
+            if (~(checkAllSides(i,j+k))){
+                return false;
+            }
+        
+            let k = k + 1;
+        }
+
+        return true;
+    }
+
+    method boolean checkNToDown(int i, int j, int len){
+        var Square curSq;
+
+        var int k;
+        let k = 0;
+
+        while(k<len){
+
+            if (~(checkAllSides(i + k,j))){
+                return false;
+            }
+
+            let k = k + 1;
+        }
+
+        return true;
+    }
+
+
+    method boolean checkAllSides(int i, int j){
+        var boolean thisSq, left, right, top, down, leftTop, rightTop, downRight, downLeft;    
+        
+        let thisSq = checkRightSquare(i,j);
+        let left = checkRightSquare(i,j-1);
+        let right = checkRightSquare(i,j+1);
+        let top = checkRightSquare(i-1,j);
+        let down = checkRightSquare(i+1,j);
+        let leftTop = checkRightSquare(i-1,j-1);
+        let rightTop = checkRightSquare(i+1,j-1);
+        let downRight = checkRightSquare(i-1,j+1);
+        let downLeft = checkRightSquare(i+1,j+1);
+
+        return ( checkBorders(i,j) & (thisSq & left & right & top & down & leftTop & rightTop & downRight & downLeft));
+
+    }
+
+    
 
     method boolean validate(){
 
@@ -86,7 +219,6 @@ class TableManager{
         let currRightDown = -1;
         let whileBreaker = true;
         let cur = leftData[currIndex];
-        let shipManager = ShipManager.new();
 
         while(i < 10){
             while (j < 10){
@@ -191,7 +323,7 @@ class TableManager{
         return shipManager.validate();
     }
 
-    method void reset(){
+    method void restart(){
         var int i;
         var Square sq;
 
@@ -211,9 +343,31 @@ class TableManager{
             let i = i + 1;
         }
 
+        return;
+    }
+
+    method void reset(){
+        do restart();
+
         let leftData = initializeBoard(startXLeft,startYLeft);
         let rightData = initializeBoard(startXRight,startYRight);
         
+        let shipManager = ShipManager.new();
+
+        return;
+    }
+
+    method void strikeComputer(Coord c){
+        var Square sq;
+        var int shipIndex;
+
+        let sq = rightData[(c.getY() * 10) + c.getX()];
+        let shipIndex =  sq.strike();
+
+        if (~(shipIndex = -1)){
+            do shipManager.checkComputerSink(shipIndex);
+        }
+
         return;
     }
 
@@ -264,6 +418,15 @@ class TableManager{
         }
     }
 
+    method boolean checkRightSquare(int i, int j){
+        var Square curSq;
+        if (checkBorders(i,j)){
+            let curSq = rightData[(10*(i))+j];
+            return (~(curSq.getIsChosen()));
+        }else{
+           return true;
+        }
+    }
 
 
     method int checkRightNeighbour(int i, int j){
@@ -297,6 +460,18 @@ class TableManager{
         
         let s = leftData[c.getX()+((c.getY())*10)];
         return s.getIsChosen();
+    }
+
+
+    method boolean isCoordStroke(Coord c){
+        var Square s;
+
+        if (c.getX()<0 | c.getX()>9 | c.getY()<0 | c.getY()>9){
+            return false;
+        }
+        
+        let s = rightData[c.getX()+((c.getY())*10)];
+        return s.getIsStroke();
     }
 
     method void markSquare(int x, int y){
