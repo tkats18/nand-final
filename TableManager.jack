@@ -339,11 +339,11 @@ class TableManager{
 
         let i = 0;
         
-        // while(i<100){
-        //     let sq = rightData[i];
-        //     do sq.erase();
-        //     let i = i + 1;
-        // }
+        while(i<100){
+            let sq = rightData[i];
+            do sq.erase();
+            let i = i + 1;
+        }
 
         return;
     }
@@ -786,7 +786,6 @@ class TableManager{
 
         while(i<7){
             if (~(shipManager.checkComputerSink(i))){
-                do Output.printInt(i);
                 let isComputerSunk = false;
             }
             let i = i + 1;
@@ -851,11 +850,11 @@ class TableManager{
     // i aris y
     method boolean checkDownNeighbour(int i, int j){
        
-        return (checkSquare(i + 1, j ));
+        return (checkSquare(i + 1, j ) | checkSquare(i + 1, j -1 ) );
     }
 
     method boolean checkLeftRightNeighbours(int i, int j){
-        return  (checkSquare(i, j + 1)) | (checkSquare(i, j - 1));
+        return  (checkSquare(i + 1, j + 1)) | (checkSquare(i + 1, j - 1));
     }
 
 
