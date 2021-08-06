@@ -87,6 +87,7 @@ class SquareCursor{
     }
 
     method void moveDown(boolean isChosen, boolean isCurrChosen){
+
         if (~(isCurrChosen)){
             do removeCursor();
         }

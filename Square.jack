@@ -157,6 +157,12 @@ class Square {
       return y;
    }
    
+   method Coord getPos() {
+      var Coord res;
+      let res = Coord.new( index - (10* Math.divide(index,10))  ,Math.divide(index,10)); 
+      return res;
+   }
+
    method void printPos(){
       var Math m;
       let m = Math.new();

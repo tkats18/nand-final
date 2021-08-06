@@ -29,7 +29,7 @@ class Ship{
         return;
     }
 
-    method void checkSink(){
+    method boolean checkSink(){
         var int i;
         var Square s;
         let i = 0;
@@ -37,7 +37,7 @@ class Ship{
         while(i<logLen){
             let s = squares[i];
             if (~(s.getIsSunk())){
-                return;
+                return false;
             }
             let i = i + 1;
         }
@@ -50,7 +50,7 @@ class Ship{
             let i = i + 1;
         }
 
-        return;
+        return true;
     }
 
     method void  printSquares(){

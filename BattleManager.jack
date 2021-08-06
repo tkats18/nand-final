@@ -3,44 +3,143 @@ class BattleManager{
     field TableManager table;
     field SquareCursor cursor;
 
-    constructor BattleManager new (TableManager tableManager){
+    field boolean userTurn, gameEnded;
+    field Random random;
+    field int choiseLen;
+    field Array choiseArray;
+    field Coord startingShipComputer;
+    field boolean isDirectionRandomized;
+
     
+    constructor BattleManager new (TableManager tableManager){
+
         let table = tableManager;
         let cursor = SquareCursor.new(false);
-    
+        
         return this;
     }
+    
+    method void userActionMethod(){
 
-    method void start(){
-        var boolean isFirst,isLast;
+        var int userAction;
         var char key;
 
+        while(userTurn){
 
-        let isFirst = true;
-        let isLast = false;
-
-        do cursor.drawCursor(false);
-        
-        while(~(isLast)){
-
-            if (~(isFirst)){
-                let isLast =  userAction(key,cursor);
-            }else{
-                let isFirst = false;
-            }
-
-            while( (Keyboard.keyPressed() = 0) & (~isLast)) {}
+            while( (Keyboard.keyPressed() = 0) ) {}
             let key = Keyboard.keyPressed();
-            while( ~(Keyboard.keyPressed() = 0) & (~isLast)) {}
-        }
+            while( ~(Keyboard.keyPressed() = 0)) {}
+            // do Output.printString("movedii");
+            // do Output.println();
 
+            let userAction = userActionPerform(key,cursor);
+            //none
+            if (userAction = 0){
+                //continue
+            }
+            // stroke 1
+            if (userAction = 1){
+                let gameEnded = table.checkGameEnd();
+                if (gameEnded){
+                    let userTurn = false;    
+                }
+            }
+            //failed to stroke 2
+            if (userAction = 2){
+                let userTurn = false;
+            }
+        }
         return;
     }
 
-    method boolean userAction(int key,SquareCursor cursor){
+    method void start(){
+
+        let choiseLen = -1;
+        let choiseArray = table.getComputerChoiseArray();
+        let isDirectionRandomized = false;
+        let userTurn = true;
+        let gameEnded = false;
+        let random = table.getRandom();
+        do cursor.drawCursor(false);
+
+        
+        while(~(gameEnded)){
+            if (userTurn){
+                do userActionMethod();
+            }else{
+                do computerActionMethod();
+            }
+            let gameEnded = table.checkGameEnd();
+        }
+
+        do Output.printString("end");
+        return;
+    }
+
+    method void computerActionMethod(){
+        var int rand, computerAction;
+        var Coord s;
+        var Square sq;
+
+        while(~(userTurn)){
+            if (choiseLen=-1){
+                let s  = table.generateRandomUnstroke();
+            }else{
+                let rand = random.generateRandom(choiseLen);
+                let sq = table.getComputerSquare(choiseArray[rand]); 
+                let s = sq.getPos();
+            }
+            
+            do Sys.wait(200);
+            let computerAction = table.strikePlayer(s);
+            
+            // //stroke and sunk 3
+            if (computerAction = 3){
+                let gameEnded = table.checkGameEnd();
+                if (gameEnded){
+                    let userTurn = true;    
+                }else{
+                    let choiseLen = -1;
+                    let isDirectionRandomized = false;
+                }
+            }
+
+            //stroke 1
+            if (computerAction = 1){
+                let gameEnded = table.checkGameEnd();
+                if (gameEnded){
+                    let userTurn = true;    
+                }else{
+                    if (~(isDirectionRandomized)){
+                        let choiseArray = table.getUnstrokeNeighbours(s);
+                        let choiseLen = table.getUnstrokeNeighbourNum(s);
+                        let isDirectionRandomized = true;
+                        let startingShipComputer = s;
+                    }else{
+                        let choiseArray = table.getUnstrokeNeighboursInOneDir(s,startingShipComputer);
+                        let choiseLen = table.getUnstrokeNeighboursInOneDirNum(s,startingShipComputer); 
+                    }
+                }
+            }
+
+            //failed to stroke 2
+            if (computerAction = 2){
+                let userTurn = true;
+                if(~(isDirectionRandomized)){
+                    let choiseLen = -1;
+                }
+            }
+        }
+        return;
+    }
+
+
+    method int userActionPerform(int key,SquareCursor cursor){
         var boolean isNextChosen,isCurrChosen;
+
         let isNextChosen = false;
         let isCurrChosen = false;
+        do Sys.wait(100);
 
         if (isArrow(key)){
 
@@ -71,22 +170,19 @@ class BattleManager{
 
                 do cursor.moveRight(isNextChosen,isCurrChosen);
             }   
+            return 0;
         }
 
         if (key = 128){
             do cursor.removeCursor();
-            do table.strikeComputer(cursor.getPos());
+            return table.strikeComputer(cursor.getPos());
         }
 
-        if (key = 83){
-            return true;
-        }
-
-        return false;
+        return 0;
     }
 
     method  boolean isArrow(int key){
-        return (key>130 & key < 134);
+        return ((key>129) & (key < 134));
     }
     
 }

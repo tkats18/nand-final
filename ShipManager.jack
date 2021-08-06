@@ -8,8 +8,8 @@ class ShipManager{
 
 
     constructor ShipManager new(){
-        let playerShips = Array.new(100);
-        let computerShips = Array.new(100);
+        let playerShips = Array.new(7);
+        let computerShips = Array.new(7);
         let playerLoglen = 0;
         let computerLoglen = 0;
         return this;
@@ -30,6 +30,7 @@ class ShipManager{
         return;
     }
 
+    
     method void addToComputerShip(int shipIndex, Square sq){
         var Ship curShip;
         
@@ -50,6 +51,12 @@ class ShipManager{
         let s = computerShips[ind];
         do s.checkSink();
         return;
+    }
+
+    method boolean checkPlayerSink(int ind){
+        var Ship s;
+        let s = playerShips[ind];
+        return s.checkSink();
     }
 
     method int getLoglen(){
@@ -100,8 +107,6 @@ class ShipManager{
 
             let i = i + 1; 
         }
-
-
 
         return ((fiveNum = 1) & (fourNum = 1) & (threeNum = 1) & (twoNum = 2) & (oneNum = 2));
     }

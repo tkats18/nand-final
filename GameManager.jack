@@ -42,15 +42,11 @@ class GameManager{
                 let battle = BattleManager.new(table);
                 do table.restart();
 
-            }else{
-                do Output.printString("ship num false   ");
-                
+            }else{  
                 do table.reset();
                 do fillBoard();
             }
-        }else{
-            do Output.printString("ship conf false   ");
-        
+        }else{        
             do table.reset();
             do fillBoard();
         }
@@ -59,7 +55,6 @@ class GameManager{
     }
 
     method void startGame(){
-        do Output.printString("movedii");
         do battle.start();
         return;
     }

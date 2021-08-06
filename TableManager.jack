@@ -30,6 +30,10 @@ class TableManager{
         return this;
     }
 
+    method Random getRandom(){
+        return random;
+    }
+
     method Array initializeBoard(int x, int y){
         var int i,j;
         var  Array data;
@@ -91,7 +95,6 @@ class TableManager{
         
                 if (direction = 0){
                     if (checkNToRight(curY,curX,len)){
-                        // do Output.printString("right");
                         do fillNToRight(curY,curX,len,ind);
                         let end = true; 
                     }
@@ -99,7 +102,6 @@ class TableManager{
                 
                 if (direction = 1){
                     if(checkNToDown(curY,curX,len)){
-                        // do Output.printString("down");
                         
                         do fillNToDown(curY,curX,len,ind);
                         let end = true; 
@@ -357,7 +359,7 @@ class TableManager{
         return;
     }
 
-    method void strikeComputer(Coord c){
+    method int strikeComputer(Coord c){
         var Square sq;
         var int shipIndex;
 
@@ -366,9 +368,423 @@ class TableManager{
 
         if (~(shipIndex = -1)){
             do shipManager.checkComputerSink(shipIndex);
+            return 1;
+        }else{
+            return 2;
+        }
+    }
+
+    method Square getComputerSquare(int index){
+        var Square sq;
+        let sq = leftData[index];
+        return sq;
+    }
+
+    method Array getComputerChoiseArray(){
+        var Array arr;
+        var int len;
+        var Square sq;
+        var int shipIndex;
+
+        let len = getComputerChoiseLen();
+        let arr = Array.new(len);
+        
+        while(shipIndex<100){
+            let sq = leftData[shipIndex];
+            if (~(sq.getIsStroke())){
+                let arr[shipIndex] = sq.getPos();
+            }
+            let shipIndex = shipIndex + 1;
         }
 
-        return;
+        return arr;
+    }
+
+    method int getComputerChoiseLen(){
+        var int res,shipIndex;
+        var Square sq;
+        let res = 0;
+
+        while(shipIndex<100){
+            let sq = leftData[shipIndex];
+            if (~(sq.getIsStroke())){
+                let res = res + 1;
+            }
+            let shipIndex = shipIndex + 1;
+        }
+
+        return res;
+    }
+
+
+    method Array getUnstrokeNeighbours(Coord c){
+        var Array res;
+        var int len;
+        var Square sq;
+        var int lentTmp;
+
+        
+        let len = getUnstrokeNeighbourNum(c);
+        let res = Array.new(len);
+        let lentTmp = 0;
+        
+        if(checkBorders(c.getX()+1,c.getY()) & (len>-1)){
+            let sq = leftData[(c.getY()*10) + c.getX()+1];
+            if (~(sq.getIsStroke())){
+                let res[lentTmp] = sq.getIndex(); 
+                let lentTmp = lentTmp+1;
+            }
+        }
+
+        if(checkBorders(c.getX()-1,c.getY()) & (len>-1)){
+            let sq = leftData[(c.getY()*10) + c.getX() - 1];
+            if (~(sq.getIsStroke())){
+                let res[lentTmp] = sq.getIndex();
+                let lentTmp = lentTmp+1;
+
+            }
+        }
+
+        if(checkBorders(c.getX(),c.getY() +1) & (len>-1)){
+            let sq = leftData[((c.getY() + 1)*10) + c.getX()];
+            if (~(sq.getIsStroke())){
+                let res[lentTmp] = sq.getIndex(); 
+                let lentTmp = lentTmp+1;
+
+            }
+        }
+
+        if(checkBorders(c.getX(),c.getY()-1) & (len>-1)){
+            let sq = leftData[((c.getY() - 1)*10) + c.getX()];
+            if (~(sq.getIsStroke())){
+                let res[lentTmp] = sq.getIndex(); 
+                let lentTmp = lentTmp+1;
+
+            }
+        }
+
+        return res;
+    }
+
+    method int getUnstrokeNeighbourNum(Coord c){
+        var int len;
+        var Square sq;
+
+        let len = 0;
+
+        if(checkBorders(c.getX()+1,c.getY())){
+            let sq = leftData[(c.getY()*10) + c.getX()+1];
+            if (~(sq.getIsStroke())){
+                let len = len + 1;
+            }
+        }
+
+
+        if(checkBorders(c.getX()-1,c.getY())){
+            let sq = leftData[(c.getY()*10) + c.getX() - 1];
+            if (~(sq.getIsStroke())){
+                let len = len + 1;
+            }
+        }
+
+
+        if(checkBorders(c.getX(),c.getY() +1)){
+            let sq = leftData[((c.getY() + 1)*10) + c.getX()];
+            if (~(sq.getIsStroke())){
+                let len = len + 1;
+            }
+        }
+
+
+        if(checkBorders(c.getX(),c.getY()-1)){
+            let sq = leftData[((c.getY() - 1)*10) + c.getX()];
+            if (~(sq.getIsStroke())){
+                let len = len + 1;
+            }
+        }
+        return len;
+    }
+
+    method Array getUnstrokeNeighboursInOneDir(Coord a,Coord b){
+
+        var int len;
+        var Array res;
+        var Square sq;
+        var int step;
+        var Coord small, big;
+        var boolean break;
+
+
+        let step = 0;
+        let len  = getUnstrokeNeighboursInOneDirNum(a,b);
+        let break = false;
+        let res = Array.new(len);
+   
+
+        if (a.getX() = b.getX()){
+            if (a.getY()<b.getY()){
+
+                let small = a;
+                let big = b;
+            }else{
+                let small = b;
+                let big = a;
+            }
+
+            while(~(break)){
+                if (~(checkBorders(small.getY()-step, small.getX()))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((small.getY()-step)*10) + small.getX()]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len - 1;
+                        let res[len] = sq.getIndex(); 
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+            
+            let break = false;
+            let step = 0;
+
+            while(~(break)){
+                if (~(checkBorders(big.getY()+step, big.getX()))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((big.getY()+step)*10) + big.getX()]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len - 1;
+                        let res[len] = sq.getIndex(); 
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+            
+        }
+
+        let break = false;
+        let step = 0;
+
+        if ((a.getY() = b.getY()) & ~(len = 0)){
+
+            if (a.getX()<b.getX()){
+
+                let small = a;
+                let big = b;
+            }else{
+                let small = b;
+                let big = a;
+            }
+
+            while(~(break)){
+                if (~(checkBorders(small.getY(), small.getX() -step))){
+                    let break = true;
+                }else{
+                    let sq = leftData[(small.getY())*10 + small.getX() -step]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len - 1;
+                        let res[len] = sq.getIndex(); 
+                        let break = true;
+                    
+                    }
+                }
+                let step = step + 1;
+            }
+            
+            let break = false;
+            let step = 0;
+
+            while(~(break)){
+                if (~(checkBorders(big.getY(), big.getX()+step))){
+                    let break = true;
+                }else{
+                    let sq = leftData[(big.getY())*10 + big.getX()+step]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len - 1;
+                        let res[len] = sq.getIndex(); 
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+        }
+
+
+        return res;
+    
+    }
+
+    method int generateRandomUnstroke(){
+        var Square s;
+        var boolean break;
+        var int curIndex;
+        let break = false;
+
+
+        while(~(break)){
+            let curIndex = random.generateRandom(100);
+            let s = leftData[curIndex];
+            if (~(s.getIsStroke())){
+                let s =leftData[curIndex] ;
+                return s.getPos();
+            }
+        }
+
+        return 0;
+    }
+
+    method int getUnstrokeNeighboursInOneDirNum(Coord a,Coord b){
+        var int len;
+        var Square sq;
+        var int step;
+        var Coord small, big;
+        var boolean break;
+
+        let step = 0;
+        let len  = 0;
+        let break = false;
+
+
+        if (a.getX() = b.getX()){
+            if (a.getY()<b.getY()){
+
+                let small = a;
+                let big = b;
+            }else{
+                let small = b;
+                let big = a;
+            }
+
+            while(~(break)){
+                if (~(checkBorders(small.getY()-step, small.getX()))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((small.getY()-step)*10) + small.getX()]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len + 1;
+                        let break = true;
+                    }
+                }
+                let step = step + 1;
+            }
+            
+            let break = false;
+            let step = 0;
+
+            while(~(break)){
+                if (~(checkBorders(big.getY()+step, big.getX()))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((big.getY()+step)*10) + big.getX()]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len + 1;
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+            
+        }
+
+        let break = false;
+        let step = 0;
+
+        if ((a.getY() = b.getY()) & (len = 0)){
+           
+            if (a.getX()<b.getX()){
+
+                let small = a;
+                let big = b;
+            }else{
+                let small = b;
+                let big = a;
+            }
+
+            while(~(break)){
+                if (~(checkBorders(small.getY(), small.getX() - step))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((small.getY())*10) + small.getX() -step]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len + 1;
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+            
+            let break = false;
+            let step = 0;
+
+            while(~(break)){
+                if (~(checkBorders(big.getY(), big.getX()+step))){
+                    let break = true;
+                }else{
+                    let sq = leftData[((big.getY())*10) + big.getX()+step]; 
+                    if (~(sq.getIsStroke())){
+                        let len = len + 1;
+                        let break = true;
+
+                    }
+                }
+                let step = step + 1;
+            }
+        }
+
+
+        return len;
+    }
+
+
+    //failed to stroke 2
+    //stroke 1
+    // //stroke and sunk 3
+
+    method int strikePlayer(Coord c){
+        var Square sq;
+        var int shipIndex;
+        var boolean isSunk;
+
+        let sq = leftData[((c.getY() * 10) + c.getX()) ];
+        let shipIndex =  sq.strike();
+
+        if (~(shipIndex = -1)){
+            let isSunk = shipManager.checkPlayerSink(shipIndex);
+            if (isSunk){
+                return 3;
+            }else{
+                return 1;
+            }
+        }else{
+            return 2;
+        }
+    }
+
+    method boolean checkGameEnd(){
+        var boolean res;
+        var int i;
+        let i = 0;
+        let res = true;
+
+        while(i<7){
+            let res = res & shipManager.checkPlayerSink(i);
+            let i = i + 1;
+        }
+        let i = 0;
+
+        while(i<7){
+            let res = res & shipManager.checkComputerSink(i);
+            let i = i + 1;
+        }
+
+        return res;
     }
 
 
@@ -483,7 +899,7 @@ class TableManager{
 
 
     method void dispose() {
-        do Memory.deAlloc(this);
+        // do Memory.deAlloc(this);
         return;
     }
 
