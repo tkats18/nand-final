@@ -170,6 +170,9 @@ class BattleManager{
         }
 
         if (key = 128){
+            if (table.isComputerSquareStroke(cursor.getPos())){
+                return 0;
+            }
             do Sys.wait(100);
             do cursor.removeCursor();
             return table.strikeComputer(cursor.getPos());

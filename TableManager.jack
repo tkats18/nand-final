@@ -817,8 +817,14 @@ class TableManager{
                 let i = i + 1;
             }
         }
-            return -1;
+        return -1;
         
+    }
+
+    method boolean isComputerSquareStroke(Coord c){
+        var Square sq;
+        let sq = rightData[(c.getY()*10) + c.getX()];
+        return sq.getIsStroke();
     }
 
 
