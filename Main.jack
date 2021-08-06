@@ -3,13 +3,26 @@ class Main {
     function void main() {
         var GameManager game;
         var Random random;
+        var int winner;
+        var char key;
 
         let random = Random.new();
-        do random.getSeed();
+        let key = random.getSeed();
 
-        let game = GameManager.new(random);
-        do game.fillBoard();
-        do game.startGame();
+        while(key = 32){   
+            let game = GameManager.new(random);
+            do game.fillBoard();
+            let winner =  game.startGame();
+
+            if (winner = 1){
+                do Output.printString("You won!!");
+            }else{
+                do Output.printString("Computer won!!");
+            }
+
+            let random = Random.new();
+            let key = random.getSeed();
+        }
         
         return;
     }

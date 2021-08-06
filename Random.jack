@@ -15,13 +15,13 @@ class Random{
         return seed - (Math.divide(seed , range) * range);
     }
 
-    method void getSeed(){
+    method int getSeed(){
         var int key;
 
         let key = 0;
         let seed = 0;
 
-        do Output.printString("press any key to start");
+        do Output.printString("press space to start");
         do Output.println();
  
         while(~key) {
@@ -34,7 +34,7 @@ class Random{
         }
 
         do Screen.clearScreen();
-        return;
+        return key;
     }
  
     method int mod(int a, int b) {

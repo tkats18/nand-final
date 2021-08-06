@@ -54,9 +54,8 @@ class GameManager{
         return;
     }
 
-    method void startGame(){
-        do battle.start();
-        return;
+    method int startGame(){
+        return battle.start();
     }
 
 

@@ -46,11 +46,10 @@ class ShipManager{
         return;
     }
 
-    method void checkComputerSink(int ind){
+    method boolean checkComputerSink(int ind){
         var Ship s;
         let s = computerShips[ind];
-        do s.checkSink();
-        return;
+        return s.checkSink();
     }
 
     method boolean checkPlayerSink(int ind){

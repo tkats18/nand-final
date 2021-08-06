@@ -29,8 +29,6 @@ class BattleManager{
             while( (Keyboard.keyPressed() = 0) ) {}
             let key = Keyboard.keyPressed();
             while( ~(Keyboard.keyPressed() = 0)) {}
-            // do Output.printString("movedii");
-            // do Output.println();
 
             let userAction = userActionPerform(key,cursor);
             //none
@@ -52,7 +50,7 @@ class BattleManager{
         return;
     }
 
-    method void start(){
+    method int start(){
 
         let choiseLen = -1;
         let choiseArray = table.getComputerChoiseArray();
@@ -72,8 +70,7 @@ class BattleManager{
             let gameEnded = table.checkGameEnd();
         }
 
-        do Output.printString("end");
-        return;
+        return table.checkWhoWon();
     }
 
     method void computerActionMethod(){
@@ -90,7 +87,7 @@ class BattleManager{
                 let s = sq.getPos();
             }
             
-            do Sys.wait(200);
+            do Sys.wait(100);
             let computerAction = table.strikePlayer(s);
             
             // //stroke and sunk 3
@@ -139,7 +136,6 @@ class BattleManager{
 
         let isNextChosen = false;
         let isCurrChosen = false;
-        do Sys.wait(100);
 
         if (isArrow(key)){
 
@@ -174,6 +170,7 @@ class BattleManager{
         }
 
         if (key = 128){
+            do Sys.wait(100);
             do cursor.removeCursor();
             return table.strikeComputer(cursor.getPos());
         }
