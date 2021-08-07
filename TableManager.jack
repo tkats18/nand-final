@@ -325,17 +325,20 @@ class TableManager{
         return shipManager.validate();
     }
 
-    method void restart(){
+    method void restart(int full){
         var int i;
         var Square sq;
 
-        let i = 0;
-
-        while(i<100){
-            let sq = leftData[i];
-            do sq.erase();
-            let i = i + 1;
+        if (full){
+            let i = 0;
+            
+            while(i<100){
+                let sq = leftData[i];
+                do sq.erase();
+                let i = i + 1;
+            }
         }
+
 
         let i = 0;
         
@@ -349,7 +352,7 @@ class TableManager{
     }
 
     method void reset(){
-        do restart();
+        do restart(true);
 
         let leftData = initializeBoard(startXLeft,startYLeft);
         let rightData = initializeBoard(startXRight,startYRight);

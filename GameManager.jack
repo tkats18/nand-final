@@ -40,7 +40,7 @@ class GameManager{
                 
                 do table.generateCumputerShips();
                 let battle = BattleManager.new(table);
-                do table.restart();
+                do table.restart(false);
 
             }else{  
                 do table.reset();
